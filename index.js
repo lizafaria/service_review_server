@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 cors = require('cors')
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
 
@@ -20,10 +20,44 @@ async function run(){
     try{
         await client.connect()
         const collection = client.db("assignment-11").collection("items");
+        app.get('/homebooks',async(req,res)=>{
+          const query = {}
+          const productitems = await collection.find(query).sort({_id:-1}) ;
+          const result =await productitems.limit(6).toArray();
+          res.send(result)
+
+        })
+        app.get('/all',async(req,res)=>{
+          const query = {}
+          const cursol = await collection.find(query);
+          const result =await cursol.toArray();
+          res.send(result)
+
+        })
         app.post('/add',async(req,res)=>{
           const items = req.body;
           const additems =await collection.insertOne(items)
           res.send(additems)
+        })
+        app.get('/inventory/:id', async(req,res)=>{
+          const id = req.params.id
+         
+          const query = {_id:ObjectId(id)}
+          const inventoryitem = await collection.findOne(query)
+          res.send(inventoryitem)
+        })
+        app.put('/delivered/:id',async(req,res)=>{
+          const id = req.params.id;
+          const updataquantity= req.body.quantity
+          const filter = {_id:ObjectId(id)}
+          const options = { upsert: true };
+          const updateDoc = {
+            $set: {
+              quantity: updataquantity
+            },
+          };
+          const result = await collection.updateOne(filter, updateDoc, options);
+          res.send(result)
         })
        
     }finally{
