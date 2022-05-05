@@ -32,7 +32,16 @@ async function run(){
         // manage page all item api
         app.get('/all',async(req,res)=>{
           const query = {}
-          const cursol = await collection.find(query);
+          const cursol = collection.find(query);
+          const result =await cursol.toArray();
+          res.send(result)
+
+        })
+        // send items by 
+        app.get('/myitem',async(req,res)=>{
+          const email = req.query.email
+          const query = {email:email}
+          const cursol =  collection.find(query);
           const result =await cursol.toArray();
           res.send(result)
 
