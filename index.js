@@ -20,6 +20,8 @@ async function run(){
     try{
         await client.connect()
         const collection = client.db("assignment-11").collection("items");
+
+        // home page inventory item
         app.get('/homebooks',async(req,res)=>{
           const query = {}
           const productitems = await collection.find(query).sort({_id:-1}) ;
@@ -27,6 +29,7 @@ async function run(){
           res.send(result)
 
         })
+        // manage page all item api
         app.get('/all',async(req,res)=>{
           const query = {}
           const cursol = await collection.find(query);
@@ -34,11 +37,13 @@ async function run(){
           res.send(result)
 
         })
+        // add item to db api
         app.post('/add',async(req,res)=>{
           const items = req.body;
           const additems =await collection.insertOne(items)
           res.send(additems)
         })
+        // single item details api
         app.get('/inventory/:id', async(req,res)=>{
           const id = req.params.id
          
@@ -46,6 +51,7 @@ async function run(){
           const inventoryitem = await collection.findOne(query)
           res.send(inventoryitem)
         })
+        // updata quantity api
         app.put('/delivered/:id',async(req,res)=>{
           const id = req.params.id;
           const updataquantity= req.body.quantity
@@ -57,6 +63,14 @@ async function run(){
             },
           };
           const result = await collection.updateOne(filter, updateDoc, options);
+          res.send(result)
+        })
+        // delete item api
+        app.delete('/remove/:id',async(req,res)=>{
+          const id = req.params.id
+         
+          const query = {_id:ObjectId(id)}
+          const result = await collection.deleteOne(query)
           res.send(result)
         })
        
