@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 cors = require('cors')
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000
 
@@ -10,6 +11,24 @@ app.use(cors());
 app.use(express.json())
 require('dotenv').config();
 
+
+function verifyJwt(req,res,next){
+  const authHearder = req.headers.authorization;
+  if(!authHearder){
+    return res.status(401).send({massage:'unauthorized access'})
+  }
+  const token = authHearder.split(' ')[1]
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function(err, decoded) {
+    if(err){
+      return res.status(403).send({massage:'forbidden daccess'});
+    }
+    
+    req.decoded = decoded;
+    next();
+  });
+         
+         
+}
 
 
 
@@ -21,6 +40,16 @@ async function run(){
         await client.connect()
         const collection = client.db("assignment-11").collection("items");
 
+
+
+        //auth
+        app.post('/login',(req,res)=>{
+          const user = req.body;
+          const accessToken = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{
+            expiresIn:'1d'
+          });
+          res.send(accessToken)
+        })
         // home page inventory item
         app.get('/homebooks',async(req,res)=>{
           const query = {}
@@ -38,12 +67,17 @@ async function run(){
 
         })
         // send items by 
-        app.get('/myitem',async(req,res)=>{
+        app.get('/myitem',verifyJwt, async(req,res)=>{
+          const decodedEmail = req.decoded.email
           const email = req.query.email
-          const query = {email:email}
+          if(email === decodedEmail){
+            const query = {email:email}
           const cursol =  collection.find(query);
           const result =await cursol.toArray();
           res.send(result)
+          }else{
+            res.status(403).send({massage:'forbidden access'})
+          }
 
         })
         // add item to db api
