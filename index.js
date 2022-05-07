@@ -53,7 +53,7 @@ async function run(){
         // home page inventory item
         app.get('/homebooks',async(req,res)=>{
           const query = {}
-          const productitems = await collection.find(query).sort({_id:-1}) ;
+          const productitems = await collection.find(query) ;
           const result =await productitems.limit(6).toArray();
           res.send(result)
 
@@ -61,8 +61,16 @@ async function run(){
         // manage page all item api
         app.get('/all',async(req,res)=>{
           const query = {}
-          const cursol = collection.find(query);
+          const cursol = collection.find(query).sort({_id:-1});
           const result =await cursol.toArray();
+          res.send(result)
+
+        })
+        //top sell book api
+        app.get('/top',async(req,res)=>{
+          const query = {}
+          const cursol = collection.find(query).sort({sell:-1});
+          const result =await cursol.limit(3).toArray();
           res.send(result)
 
         })
@@ -72,7 +80,7 @@ async function run(){
           const email = req.query.email
           if(email === decodedEmail){
             const query = {email:email}
-          const cursol =  collection.find(query);
+          const cursol =  collection.find(query).sort({_id:-1});
           const result =await cursol.toArray();
           res.send(result)
           }else{
@@ -98,11 +106,14 @@ async function run(){
         app.put('/delivered/:id',async(req,res)=>{
           const id = req.params.id;
           const updataquantity= req.body.quantity
+          const updateSell= req.body.sell
+          // console.log(req.body);
           const filter = {_id:ObjectId(id)}
           const options = { upsert: true };
           const updateDoc = {
             $set: {
-              quantity: updataquantity
+              quantity: updataquantity,
+              sell : updateSell
             },
           };
           const result = await collection.updateOne(filter, updateDoc, options);
