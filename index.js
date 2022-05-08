@@ -39,6 +39,7 @@ async function run(){
     try{
         await client.connect()
         const collection = client.db("assignment-11").collection("items");
+        const blogscollection = client.db("assignment-11").collection("blogs");
 
 
 
@@ -62,6 +63,13 @@ async function run(){
         app.get('/all',async(req,res)=>{
           const query = {}
           const cursol = collection.find(query).sort({_id:-1});
+          const result =await cursol.toArray();
+          res.send(result)
+
+        })
+        app.get('/blogs',async(req,res)=>{
+          const query = {}
+          const cursol = blogscollection.find(query);
           const result =await cursol.toArray();
           res.send(result)
 
