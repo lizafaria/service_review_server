@@ -18,13 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.11.0",
     "nodemon": "^2.0.20"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-lizafaria.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-lizafaria/issues"
-  },
-  "homepage": "https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-lizafaria#readme"
+  }
 }
+
+

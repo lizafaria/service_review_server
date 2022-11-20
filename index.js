@@ -152,3 +152,13 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(` listening on port ${port}`);
 });
+
+// ,
+//   "repository": {
+//     "type": "git",
+//     "url": "git+https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-lizafaria.git"
+//   },
+//   "bugs": {
+//     "url": "https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-lizafaria/issues"
+//   },
+//   "homepage": "https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-lizafaria#readme"
